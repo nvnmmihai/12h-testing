@@ -2,15 +2,17 @@ name: Contribution Auto
 
 on:
   schedule:
-    - cron: '0 */12 * * *'  # Toutes les 12h (UTC)
-  workflow_dispatch:        # Permet aussi de lancer à la main
+    - cron: '0 */12 * * *'  # Exécute toutes les 12 heures (UTC)
+  workflow_dispatch:        # Permet aussi de lancer manuellement
 
 jobs:
   commit:
     runs-on: ubuntu-latest
     steps:
-      - name: Cloner le repo
+      - name: Cloner le dépôt
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Modifier le fichier et pousser
         run: |
@@ -19,4 +21,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add contrib-log.txt
           git commit -m "Contribution automatique - $(date)" || echo "Aucun changement à commit"
+          # Configure l'URL du remote avec le token pour autoriser le push
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git push
