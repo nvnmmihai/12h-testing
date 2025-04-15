@@ -2,8 +2,8 @@ name: Contribution Auto
 
 on:
   schedule:
-    - cron: '0 */12 * * *'  # Toutes les 12h (à minuit et midi UTC)
-  workflow_dispatch:        # Permet aussi de le lancer manuellement
+    - cron: '0 */12 * * *'  # Toutes les 12h (UTC)
+  workflow_dispatch:        # Permet aussi de lancer à la main
 
 jobs:
   commit:
@@ -12,18 +12,11 @@ jobs:
       - name: Cloner le repo
         uses: actions/checkout@v4
 
-      - name: Modifier le fichier pour contribution
+      - name: Modifier le fichier et pousser
         run: |
           echo "Ping automatique à $(date)" >> contrib-log.txt
-
-      - name: Commit et push
-        run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add contrib-log.txt
-          git commit -m "Contribution automatique - $(date)" || echo "Rien à commit"
+          git commit -m "Contribution automatique - $(date)" || echo "Aucun changement à commit"
           git push
-
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
